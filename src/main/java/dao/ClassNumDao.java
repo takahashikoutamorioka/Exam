@@ -6,30 +6,56 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassNumDao extends Dao {
+import bean.School;
 
-    // クラス番号一覧を取得
-    public List<String> filter(String schoolCd) throws Exception {
+public class ClassNumDao extends Dao{
 
-        List<String> list = new ArrayList<>();
+	public List<String> filter(School school) {
+		List<String> list = new ArrayList<String>();
+		PreparedStatement statement = null;
+		ResultSet rSet = null;
+		String cd = school.getCd();
+		try{
+			Connection connection = getConnection();
+			statement = connection.prepareStatement("select * from class_num where school_cd = ?");
+			statement.setString(1, cd);
+			rSet = statement.executeQuery();
+			while(rSet.next()){
+				String num = rSet.getString("class_num");
+				list.add(num);
+			}
 
-        Connection connection = getConnection();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public boolean save(School school,String[] classNums)throws Exception {
+		PreparedStatement statement = null;
+		String cd = school.getCd();
+		int count = 0;
+		try {
+			Connection connection = getConnection();
+			for (String class_num : classNums){
+				if(!class_num.equals("")){
+				statement = connection.prepareStatement(
+						"insert into class_num(school_cd,class_num)values(?,?)");
+				statement.setString(1, cd);
+				statement.setString(2, class_num);
+				count += statement.executeUpdate();
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			statement.close();
+		}
+		if(count == classNums.length){
+			return true;
+		}else{
+			return false;
+		}
+	}
 
-        String sql = "SELECT class_num FROM class_num WHERE school_cd = ? ORDER BY class_num";
-
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, schoolCd);
-
-        ResultSet rs = statement.executeQuery();
-
-        while (rs.next()) {
-            list.add(rs.getString("class_num"));
-        }
-
-        rs.close();
-        statement.close();
-        connection.close();
-
-        return list;
-    }
 }
