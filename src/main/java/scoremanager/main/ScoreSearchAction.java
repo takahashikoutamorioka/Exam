@@ -1,12 +1,9 @@
 package scoremanager.main;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-
-import bean.Score;
-import bean.dao.ScoreDao;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import tool.Action;
+
 
 public class ScoreSearchAction extends Action {
     @Override
