@@ -33,6 +33,9 @@ public class StudentUpdateExecuteAction extends Action {
 		sDao.save(student);
 
 		req.getRequestDispatcher("student_update_done.jsp").forward(req, res);
+		
+		req.setAttribute("error", "エラー");
+		return ;
 
 
 	}

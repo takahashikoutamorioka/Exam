@@ -10,5 +10,9 @@ public class StudentCreateAction extends Action {
 
         // ただ画面に遷移するだけ
         req.getRequestDispatcher("student_create.jsp").forward(req, res);
+        
+        req.setAttribute("error", "エラーメッセージ内容");
+        return ;
+
     }
 }

@@ -24,7 +24,9 @@ public class StudentUpdateAction extends Action {
 		req.setAttribute("class_num_set", list);
 
 		req.getRequestDispatcher("student_update.jsp").forward(req, res);
-
+		
+		req.setAttribute("error", "エラー");
+		return ;
 
 	}
 }

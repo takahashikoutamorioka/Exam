@@ -92,5 +92,9 @@ public class StudentListAction extends Action {
 		req.setAttribute("ent_year_set", entYearSet);
 
 		req.getRequestDispatcher("student_list.jsp").forward(req, res);
+		
+		req.setAttribute("error", "エラー");
+		return ;
+
 	}
 }
