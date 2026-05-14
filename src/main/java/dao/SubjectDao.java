@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bean.School;
+import bean.Student;
 import bean.Subject;
 
 public class SubjectDao extends Dao{
