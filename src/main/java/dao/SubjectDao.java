@@ -3,210 +3,165 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import bean.School;
 import bean.Subject;
 
-public class SubjectDao extends Dao{
+public class SubjectDao extends Dao {
 
-	public Subject get(String cd,School school) throws Exception {
-		Subject subject = new Subject();
-		subject.setSchool(school);
-		// データベースへのコネクションを確率
-		Connection connection = getConnection();
-		// プリペアードステートメント
-		PreparedStatement statement = null;
+    // 1件取得
+    public Subject get(String cd, School school) throws Exception {
+        Subject subject = new Subject();
+        subject.setSchool(school);
 
-		try {
-			// プリペアードステートメントにSQL文をセット
-			statement = connection.prepareStatement("select * from subject where school_cd=? and cd=?");
-			// プリペアードステートメントに学生番号をバインド
-			statement.setString(1, school.getCd());
-			statement.setString(2, cd);
-			// プリペアードステートメントを実行
-			ResultSet rSet = statement.executeQuery();
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
 
-			if (rSet.next()){
-				subject.setCd(rSet.getString("cd"));
-				subject.setName(rSet.getString("name"));
-			}else {
-				subject = null;
-			}
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			// プリペアードステートメントを閉じる
-			if (statement !=null) {
-				try{
-					statement.close();
-				}catch (SQLException sqle){
-					throw sqle;
-				}
-			}
-			// コネクションを閉じる
-			if (connection != null){
-				try{
-					connection.close();
-				} catch (SQLException sqle) {
-					throw sqle;
-				}
-			}
-		}
-		return subject;
-	}
+        try {
+            statement = connection.prepareStatement(
+                "SELECT * FROM subject WHERE school_id = ? AND cd = ?"
+            );
+            statement.setString(1, school.getCd());
+            statement.setString(2, cd);
 
-	public List<Subject> filter(School school,boolean filter) throws Exception{
-		List<Subject> list = new ArrayList<>();
-		Connection connection = getConnection();
-		PreparedStatement statement = null;
-		ResultSet rSet = null;
+            ResultSet rSet = statement.executeQuery();
 
-		try {
-			statement = connection.prepareStatement(
-			"select * from subject where school_cd=? and is_true = ?");
-			statement.setString(1, school.getCd());
-			statement.setBoolean(2, filter);
-			rSet = statement.executeQuery();
-			while(rSet.next()){
-				Subject subject = new Subject();
-				subject.setCd(rSet.getString("cd"));
-				subject.setName(rSet.getString("name"));
-				subject.setSchool(school);
-				list.add(subject);
-			}
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			if (statement !=null) {
-				try{
-					statement.close();
-				}catch (SQLException sqle){
-					throw sqle;
-				}
-			}
-			// コネクションを閉じる
-			if (connection != null){
-				try{
-					connection.close();
-				} catch (SQLException sqle) {
-					throw sqle;
-				}
-			}
-		}
-		return list;
-	}
+            if (rSet.next()) {
+                subject.setCd(rSet.getString("cd"));
+                subject.setName(rSet.getString("name"));
+            } else {
+                subject = null;
+            }
 
-	
-	public boolean save(Subject subject) throws Exception{
-		// コネクションを確立
-		Connection connection = getConnection();
-		// プリペアードステートメント
-		PreparedStatement statement = null;
-		// 実行件数
-		int count = 0;
+        } finally {
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        }
 
-		try {
+        return subject;
+    }
 
-			statement = connection.prepareStatement(
-					"merge into subject key(school_cd,cd) values(?,?,?,?) ");
-			statement.setString(1, subject.getSchool().getCd());
-			statement.setString(2, subject.getCd());
-			statement.setString(3, subject.getName());
-			statement.setBoolean(4, true);
-			
-			// プリペアードステートメントを実行
-			count = statement.executeUpdate();
-		}catch (Exception e){
-			e.printStackTrace();
-			statement.close();
-			connection.close();
-			return false;
-		} finally {
-			// プリペアードステートメントを閉じる
-			if (statement !=null) {
-				try{
-					statement.close();
-				}catch (SQLException sqle){
-					throw sqle;
-				}
-			}
-			// コネクションを閉じる
-			if (connection != null){
-				try{
-					connection.close();
-				} catch (SQLException sqle) {
-					throw sqle;
-				}
-			}
-		}
+    // 一覧取得
+    public List<Subject> filter(School school, boolean filter) throws Exception {
+        List<Subject> list = new ArrayList<>();
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        ResultSet rSet = null;
 
-		if (count > 0) {
-			//実行件数が1件以上ある場合
-			return true;
-		} else {
-			// 実行件数が0件の場合
-			return false;
-		}
-	}
+        try {
+            statement = connection.prepareStatement(
+                "SELECT * FROM subject WHERE school_id = ? AND delete_flag = ?"
+            );
+            statement.setString(1, school.getCd());
+            statement.setBoolean(2, filter);
 
-	public boolean delete(Subject subject) throws Exception{
-		Connection connection = getConnection();
-		PreparedStatement statement = null;
-		int count = 0;
-		try{
-			statement = connection.prepareStatement(
-				"update subject set is_true = ? where school_cd = ? and cd = ?");
-			statement.setBoolean(1, false);
-			statement.setString(2, subject.getSchool().getCd());
-			statement.setString(3, subject.getCd());
-			count = statement.executeUpdate();
-		}catch (Exception e) {
-			throw e;
-		}finally {
-			// プリペアードステートメントを閉じる
-			if (statement !=null) {
-				try{
-					statement.close();
-				}catch (SQLException sqle){
-					throw sqle;
-				}
-			}
-			// コネクションを閉じる
-			if (connection != null){
-				try{
-					connection.close();
-				} catch (SQLException sqle) {
-					throw sqle;
-				}
-			}
-		}
-		if (count > 0) {
-			//実行件数が1件以上ある場合
-			return true;
-		} else {
-			// 実行件数が0件の場合
-			return false;
-		}
-	}
-	
-	public boolean change(String cd,boolean back) throws Exception{
-		Connection connection = getConnection();
-		PreparedStatement statement = null;
-		try{
-			statement = connection.prepareStatement(
-					"update subject set is_true = true where cd = ?");
-			statement.setString(1, cd);
-			statement.executeUpdate();
-		}catch (Exception e) {
-			throw e;
-		}finally {
-			statement.close();
-			connection.close();
-		}
-		
-		return true;
-	}
+            rSet = statement.executeQuery();
+
+            while (rSet.next()) {
+                Subject subject = new Subject();
+                subject.setCd(rSet.getString("cd"));
+                subject.setName(rSet.getString("name"));
+                subject.setSchool(school);
+                list.add(subject);
+            }
+
+        } finally {
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        }
+
+        return list;
+    }
+
+    // 保存（INSERT or UPDATE）
+    public boolean save(Subject subject) throws Exception {
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        int count = 0;
+
+        try {
+            // 既存チェック
+            PreparedStatement check = connection.prepareStatement(
+                "SELECT cd FROM subject WHERE school_id = ? AND cd = ?"
+            );
+            check.setString(1, subject.getSchool().getCd());
+            check.setString(2, subject.getCd());
+            ResultSet rs = check.executeQuery();
+
+            if (rs.next()) {
+                // UPDATE
+                statement = connection.prepareStatement(
+                    "UPDATE subject SET name = ?, delete_flag = ? WHERE school_id = ? AND cd = ?"
+                );
+                statement.setString(1, subject.getName());
+                statement.setBoolean(2, true);
+                statement.setString(3, subject.getSchool().getCd());
+                statement.setString(4, subject.getCd());
+
+            } else {
+                // INSERT
+                statement = connection.prepareStatement(
+                    "INSERT INTO subject (school_id, cd, name, delete_flag) VALUES (?, ?, ?, ?)"
+                );
+                statement.setString(1, subject.getSchool().getCd());
+                statement.setString(2, subject.getCd());
+                statement.setString(3, subject.getName());
+                statement.setBoolean(4, true);
+            }
+
+            count = statement.executeUpdate();
+
+        } finally {
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        }
+
+        return count > 0;
+    }
+
+    // 削除（フラグ変更）
+    public boolean delete(Subject subject) throws Exception {
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        int count = 0;
+
+        try {
+            statement = connection.prepareStatement(
+                "UPDATE subject SET delete_flag = ? WHERE school_id = ? AND cd = ?"
+            );
+            statement.setBoolean(1, false);
+            statement.setString(2, subject.getSchool().getCd());
+            statement.setString(3, subject.getCd());
+
+            count = statement.executeUpdate();
+
+        } finally {
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        }
+
+        return count > 0;
+    }
+
+    // 復元
+    public boolean change(String cd, boolean back) throws Exception {
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = connection.prepareStatement(
+                "UPDATE subject SET delete_flag = true WHERE cd = ?"
+            );
+            statement.setString(1, cd);
+            statement.executeUpdate();
+
+        } finally {
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        }
+
+        return true;
+    }
 }
