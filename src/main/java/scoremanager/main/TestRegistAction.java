@@ -114,6 +114,7 @@ public class TestRegistAction extends Action {
         session.setAttribute("f2", classNum);
         session.setAttribute("f3", subjectCd);
 
+        
         req.getRequestDispatcher("test_regist.jsp").forward(req, res);
     }
 }

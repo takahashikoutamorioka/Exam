@@ -34,6 +34,7 @@ public class TestListStudentExecuteAction extends Action {
 
 	        Student student = sDao.get(studentNo);
 
+	        
 	        // ★ filter() を使わず、科目一覧を get() で作る
 	        List<Subject> subjects = new ArrayList<>();
 	        subjects.add(subDao.get("css", school));
