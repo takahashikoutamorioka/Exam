@@ -28,6 +28,7 @@ public class TestListAction extends Action {
             throws Exception {
 
     	
+    	
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
         School school = teacher.getSchool();
