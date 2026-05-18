@@ -26,7 +26,6 @@ public class TestListAction extends Action {
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse res)
             throws Exception {
-
     	
     	
         HttpSession session = req.getSession();
