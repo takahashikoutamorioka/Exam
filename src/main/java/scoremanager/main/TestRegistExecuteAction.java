@@ -24,6 +24,7 @@ public class TestRegistExecuteAction extends Action {
 
         HttpSession session = req.getSession();
 
+        
         School school = (School) session.getAttribute("school");
         Subject subject = (Subject) session.getAttribute("subject");
         String f4 = (String) session.getAttribute("f4");

@@ -16,6 +16,7 @@ public class TeacherDao extends Dao {
 	 * @return 教員クラスのインスタンス 存在しない場合はnull
 	 * @throws Exception
 	 */
+	
 	public Teacher get(String id) throws Exception {
 		// 教員インスタンスを初期化
 		Teacher teacher = new Teacher();

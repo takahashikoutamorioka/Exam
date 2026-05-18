@@ -68,6 +68,7 @@ public class TestDao extends Dao {
                 test.setPoint(rSet.getInt("point"));
             }
 
+            
         } finally {
             if (rSet != null) rSet.close();
             if (statement != null) statement.close();

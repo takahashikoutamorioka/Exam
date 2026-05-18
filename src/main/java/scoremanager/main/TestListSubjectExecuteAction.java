@@ -27,6 +27,7 @@ public class TestListSubjectExecuteAction extends Action {
         String classNum = req.getParameter("f2");
         String subjectCd = req.getParameter("f3");
 
+        
         // 入力チェック
         if (entYearStr == null || entYearStr.equals("0") ||
             classNum == null || classNum.equals("0") ||

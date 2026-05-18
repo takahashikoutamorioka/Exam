@@ -16,6 +16,7 @@ public class StudentUpdateExecuteAction extends Action {
 		HttpSession session = req.getSession();
 		Teacher teacher = (Teacher)session.getAttribute("user");
 
+		
 		int entYear = Integer.parseInt(req.getParameter("ent_year"));
 		String No = req.getParameter("no");
 		String name = req.getParameter("name");

@@ -29,6 +29,7 @@ public class TestRegistAction extends Action {
         Teacher teacher = (Teacher) session.getAttribute("user");
         School school = teacher.getSchool();
 
+        
         // ▼ パラメータ取得
         String entYearStr = req.getParameter("f1");
         String classNum   = req.getParameter("f2");

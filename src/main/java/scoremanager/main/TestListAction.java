@@ -34,6 +34,7 @@ public class TestListAction extends Action {
 
         // DAO
         ClassNumDao cDao = new ClassNumDao();
+     
         StudentDao sDao = new StudentDao();
         SubjectDao subDao = new SubjectDao();
         TestDao tDao = new TestDao();
