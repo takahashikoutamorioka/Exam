@@ -36,11 +36,15 @@ public class TestListStudentExecuteAction extends Action {
 
 	        // ★ filter() を使わず、科目一覧を get() で作る
 	        List<Subject> subjects = new ArrayList<>();
-	        subjects.add(subDao.get("J01", school));
-	        subjects.add(subDao.get("J02", school));
-	        subjects.add(subDao.get("J03", school));
-	        subjects.add(subDao.get("J04", school));
-	        subjects.add(subDao.get("J05", school));
+	        subjects.add(subDao.get("css", school));
+	        subjects.add(subDao.get("eng", school));
+	        subjects.add(subDao.get("jav", school));
+	        subjects.add(subDao.get("kat", school));
+	        subjects.add(subDao.get("kok", school));
+	        subjects.add(subDao.get("pyt", school));
+	        subjects.add(subDao.get("rik", school));
+	        subjects.add(subDao.get("suu", school));
+
 
 	        List<Test> tests = new ArrayList<>();
 	        for (Subject subject : subjects) {

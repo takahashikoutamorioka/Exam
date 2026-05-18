@@ -1,5 +1,4 @@
 package scoremanager.main;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +30,9 @@ public class TestListSubjectExecuteAction extends Action {
         if (entYearStr == null || entYearStr.equals("0") ||
             classNum == null || classNum.equals("0") ||
             subjectCd == null || subjectCd.equals("0")) {
-            req.setAttribute("error", "入学年度とクラスと科目を選択してください。");
-            req.getRequestDispatcher("test_list_subject.jsp").forward(req, res);
+
+            req.setAttribute("error", "入学年度・クラス・科目を選択してください。");
+            req.getRequestDispatcher("test_list_student.jsp").forward(req, res);
             return;
         }
 
