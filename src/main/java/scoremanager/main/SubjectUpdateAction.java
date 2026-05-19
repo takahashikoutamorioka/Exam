@@ -6,41 +6,47 @@ import bean.Teacher;
 import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import tool.Action;
 
 public class SubjectUpdateAction extends Action {
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // ログインユーザ取得
-        Teacher teacher = (Teacher) request.getSession().getAttribute("user");
+        HttpSession session = request.getSession();
+        Teacher teacher = (Teacher) session.getAttribute("user");
+
+        // 未ログイン
         if (teacher == null) {
-            return "login.jsp";
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
         }
 
         // 学校コード取得
-        School school = teacher.getSchoolCd();
-        String schoolCd = school.getCd();
-
-        // パラメータ（科目コード）
+        School school = teacher.getSchool();
         String cd = request.getParameter("cd");
 
         // 科目取得
         SubjectDao dao = new SubjectDao();
-        Subject subject = dao.find(cd, schoolCd);
+        Subject subject = dao.get(cd, school);
 
+        // 科目が存在しない場合
         if (subject == null) {
             request.setAttribute("error", "科目が存在していません");
-            return "subject_update_error.jsp";
+            request.getRequestDispatcher("/scoremanager/main/subject_update_error.jsp")
+                   .forward(request, response);
+            return;
         }
 
         // JSP に渡す
         request.setAttribute("subject", subject);
 
-        // ここが重要！！ forward ではなく return
-        return "subject_update.jsp";
+        // 変更画面へ
+        request.getRequestDispatcher("/scoremanager/main/subject_update.jsp")
+               .forward(request, response);
     }
 }
+
 
 

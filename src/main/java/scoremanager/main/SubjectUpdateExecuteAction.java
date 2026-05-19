@@ -1,54 +1,71 @@
 package scoremanager.main;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+import bean.School;
 import bean.Subject;
-import bean.User;
+import bean.Teacher;
 import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import tool.Action;
 
 public class SubjectUpdateExecuteAction extends Action {
 
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        req.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession();
+        Teacher teacher = (Teacher) session.getAttribute("user");
 
-        User user = (User) req.getSession().getAttribute("user");
-        String schoolCd = user.getSchool().getCd();
-
-        String cd   = req.getParameter("cd");
-        String name = req.getParameter("name");
-
-        // 科目名未入力エラー
-        if (name == null || name.isBlank()) {
-            Subject s = new Subject();
-            s.setCd(cd);
-            s.setName("");
-            s.setSchoolCd(schoolCd);
-
-            req.setAttribute("error", "科目名を入力してください");
-            req.setAttribute("subject", s);
-            return "subject_update_error.jsp";
+        if (teacher == null) {
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
         }
+
+        School school = teacher.getSchool();
+        String cd = request.getParameter("cd");
+        String name = request.getParameter("name");
 
         SubjectDao dao = new SubjectDao();
+        Subject subject = dao.get(cd, school);
 
-        // 変更中に削除された場合
-        Subject current = dao.find(cd, schoolCd);
-        if (current == null) {
-            req.setAttribute("error", "科目が存在していません");
-            return "subject_update_error.jsp";
+        if (subject == null) {
+            request.setAttribute("error", "科目が存在していません");
+            request.getRequestDispatcher("/scoremanager/main/subject_update_done.jsp")
+                   .forward(request, response);
+            return;
         }
 
-        Subject s = new Subject();
-        s.setCd(cd);
-        s.setName(name);
-        s.setSchoolCd(schoolCd);
+        if (name == null || name.isBlank()) {
+            request.setAttribute("error", "科目名を入力してください");
+            request.setAttribute("subject", subject);
+            request.getRequestDispatcher("/scoremanager/main/subject_update_done.jsp")
+                   .forward(request, response);
+            return;
+        }
 
-        dao.update(s);
+        // ★ DAO を変更せずに UPDATE を実行する
+        Connection con = dao.getConnection();
+        PreparedStatement ps = con.prepareStatement(
+            "UPDATE subject SET name = ? WHERE school_cd = ? AND cd = ?"
+        );
+        ps.setString(1, name);
+        ps.setString(2, school.getCd());
+        ps.setString(3, cd);
+        ps.executeUpdate();
+        ps.close();
+        con.close();
 
-        return "subject_update_complete.jsp";
+        subject.setName(name);
+        request.setAttribute("subject", subject);
+
+        request.getRequestDispatcher("/scoremanager/main/subject_update_done.jsp")
+               .forward(request, response);
     }
 }
+
+
 
