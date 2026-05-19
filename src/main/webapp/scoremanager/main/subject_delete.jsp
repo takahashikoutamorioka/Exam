@@ -8,6 +8,7 @@
             科目情報削除
         </h2>
 
+
         <div class="w-75 mx-auto mt-4">
 
             <p class="fs-5 mb-4">
