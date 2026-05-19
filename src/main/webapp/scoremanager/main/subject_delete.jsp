@@ -1,44 +1,38 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>科目削除確認</title>
-</head>
-<body>
+<c:set var="content">
+    <section class="me-4">
 
-<h2>科目削除確認</h2>
+        <h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">
+            科目情報削除
+        </h2>
 
-<p>以下の科目を削除します。よろしいですか？</p>
+        <div class="w-75 mx-auto mt-4">
 
-<table border="1">
-    <tr>
-        <th>科目コード</th>
-        <td>${subject.cd}</td>
-    </tr>
-    <tr>
-        <th>科目名</th>
-        <td>${subject.name}</td>
-    </tr>
-</table>
+            <p class="fs-5 mb-4">
+                「${subject.name}（${subject.cd}）」を削除してもよろしいですか？
+            </p>
 
-<form action="SubjectDeleteExecute.action" method="post">
+            <form action="SubjectDeleteExecute.action" method="post">
+                <input type="hidden" name="cd" value="${subject.cd}">
 
-    <!-- 削除対象の科目コード -->
-    <input type="hidden" name="cd" value="${subject.cd}">
+                <button type="submit" class="btn btn-danger px-4">
+                    削除
+                </button>
 
-    <!-- 学校コード（hidden） -->
-    <input type="hidden" name="schoolCd" value="${subject.schoolCd}">
+                <a href="SubjectList.action" class="btn btn-secondary ms-3">
+                    戻る
+                </a>
+            </form>
 
-    <div>
-        <input type="submit" value="削除">
-        <a href="SubjectList.action">戻る</a>
-    </div>
+        </div>
 
-</form>
+    </section>
+</c:set>
 
-</body>
-</html>
+<c:import url="/common/base.jsp">
+    <c:param name="title" value="科目情報削除" />
+    <c:param name="content" value="${content}" />
+</c:import>
 
