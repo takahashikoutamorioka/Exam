@@ -6,7 +6,11 @@
 
     <c:param name="content">
         <div class="container mt-4">
-
+        
+        <section class="me-4">
+            <h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">
+                成績管理
+            </h2>
 
             <!-- ① 科目検索フォーム -->
             <form action="TestListSubjectExecute.action" method="get">
@@ -93,7 +97,7 @@
                     <!-- ここに結果テーブルを入れる -->
                 </div>
             </c:if>
-
+        </section>
         </div>
     </c:param>
 </c:import>

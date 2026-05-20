@@ -61,7 +61,7 @@ public class TestRegistExecuteAction extends Action {
                 dao.save(test, connection);
 
             } catch (NumberFormatException e) {
-                errors.put(stu.getNo(), "数値を入力してください");
+                errors.put(stu.getNo(), "0～100までの範囲で入力してください。");
             }
         }
 
