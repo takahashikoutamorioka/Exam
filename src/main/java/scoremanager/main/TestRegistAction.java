@@ -29,7 +29,6 @@ public class TestRegistAction extends Action {
         Teacher teacher = (Teacher) session.getAttribute("user");
         School school = teacher.getSchool();
 
-        
         // ▼ パラメータ取得
         String entYearStr = req.getParameter("f1");
         String classNum   = req.getParameter("f2");
@@ -54,7 +53,6 @@ public class TestRegistAction extends Action {
         );
         ps.setString(1, school.getCd());
         ResultSet rs = ps.executeQuery();
-
         while (rs.next()) {
             String cd = rs.getString("cd");
             Subject s = subDao.get(cd, school);
@@ -63,6 +61,34 @@ public class TestRegistAction extends Action {
         rs.close();
         ps.close();
         con.close();
+
+        // ▼ 入学年度リスト
+        LocalDate today = LocalDate.now();
+        int year = today.getYear();
+        List<Integer> entYearSet = new ArrayList<>();
+        for (int i = year - 10; i <= year; i++) {
+            entYearSet.add(i);
+        }
+
+        // ▼ クラス番号リスト
+        List<String> classNumList = cNumDao.filter(school);
+
+        // ▼ 入力チェック（未選択時のエラー）
+        if ("0".equals(entYearStr) || "0".equals(classNum) || "0".equals(subjectCd) || "0".equals(noStr)) {
+            req.setAttribute("error", "入学年度・クラス・科目・回数を選択してください。");
+
+            // JSPに再表示用データを渡す
+            req.setAttribute("ent_year_set", entYearSet);
+            req.setAttribute("class_num_list", classNumList);
+            req.setAttribute("subject_list", subjectList);
+            req.setAttribute("f1", entYearStr);
+            req.setAttribute("f2", classNum);
+            req.setAttribute("f3", subjectCd);
+            req.setAttribute("f4", noStr);
+
+            req.getRequestDispatcher("test_regist.jsp").forward(req, res);
+            return;
+        }
 
         // ▼ 選択された科目
         Subject subject = null;
@@ -80,17 +106,6 @@ public class TestRegistAction extends Action {
             students = sDao.filter(school, true);
         }
 
-        // ▼ 入学年度リスト
-        LocalDate today = LocalDate.now();
-        int year = today.getYear();
-        List<Integer> entYearSet = new ArrayList<>();
-        for (int i = year - 10; i <= year; i++) {
-            entYearSet.add(i);
-        }
-
-        // ▼ クラス番号リスト
-        List<String> classNumList = cNumDao.filter(school);
-
         // ▼ JSP に渡す
         req.setAttribute("students", students);
         req.setAttribute("subject", subject);
@@ -102,20 +117,12 @@ public class TestRegistAction extends Action {
         req.setAttribute("ent_year_set", entYearSet);
         req.setAttribute("class_num_list", classNumList);
 
-        // ▼ ★★★ ExecuteAction が必要とする値を session に保存 ★★★
+        // ▼ session に保存（登録処理用）
         session.setAttribute("students", students);
         session.setAttribute("subject", subject);
         session.setAttribute("f4", noStr);
         session.setAttribute("school", school);
 
-        session.setAttribute("ent_year_set", entYearSet);
-        session.setAttribute("class_num_list", classNumList);
-        session.setAttribute("subject_list", subjectList);
-        session.setAttribute("f1", entYearStr);
-        session.setAttribute("f2", classNum);
-        session.setAttribute("f3", subjectCd);
-
-        
         req.getRequestDispatcher("test_regist.jsp").forward(req, res);
     }
 }

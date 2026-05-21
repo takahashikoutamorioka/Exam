@@ -63,6 +63,11 @@
                     </div>
                 </div>
             </form>
+            
+            <c:if test="${not empty error}">
+			    <p class="text-warning fw-bold ms-3">${error}</p>
+			</c:if>
+
 
             <!-- 科目と回数の表示 -->
             <c:if test="${subject != null}">
