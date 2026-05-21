@@ -6,18 +6,15 @@
 
     <c:param name="content">
         <div class="container mt-4">
-
             <section class="me-4">
                 <h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">
-                    成績管理
+                    成績参照
                 </h2>
 
-                <!-- ① 科目検索フォーム -->
+                <!-- 科目検索フォーム -->
                 <form action="TestList.action" method="get">
                     <div class="border mx-3 mb-2 py-3 rounded">
                         <div class="row align-items-end">
-
-                            <!-- 入学年度 -->
                             <div class="col">
                                 <label class="form-label">入学年度</label>
                                 <select class="form-select" name="f1">
@@ -27,8 +24,6 @@
                                     </c:forEach>
                                 </select>
                             </div>
-
-                            <!-- クラス -->
                             <div class="col">
                                 <label class="form-label">クラス</label>
                                 <select class="form-select" name="f2">
@@ -38,8 +33,6 @@
                                     </c:forEach>
                                 </select>
                             </div>
-
-                            <!-- 科目 -->
                             <div class="col">
                                 <label class="form-label">科目</label>
                                 <select class="form-select" name="f3">
@@ -51,74 +44,69 @@
                                     </c:forEach>
                                 </select>
                             </div>
-
-                            <!-- 科目検索ボタン -->
                             <div class="col d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary px-4">検索</button>
                             </div>
-
                         </div>
                     </div>
                 </form>
 
-                <!-- ★ 科目検索のエラー -->
-                <c:if test="${not empty error and empty f4}">
-                    <p class="text-warning fw-bold ms-3">${error}</p>
-                </c:if>
-
-
-                <!-- ② 学生番号検索フォーム -->
+                <!-- 学生番号検索フォーム -->
                 <form action="TestList.action" method="get">
                     <div class="border mx-3 mb-2 py-3 rounded">
                         <div class="row align-items-end">
-
-                            <!-- 学生番号 -->
                             <div class="col">
                                 <label class="form-label">学生番号</label>
                                 <input type="text" name="f4" class="form-control"
-                                       value="${f4}" placeholder="学生番号を入力してください"  required />
+                                       value="${f4}" placeholder="学生番号を入力してください" />
                             </div>
-
-                            <!-- 学生検索ボタン -->
                             <div class="col d-flex align-items-end">
                                 <button type="submit" class="btn btn-secondary px-4">検索</button>
                             </div>
-
                         </div>
                     </div>
                 </form>
-                
-            
 
-                <!-- ▼ 検索結果表示 -->
-                <c:if test="${not empty students}">
-                    <div class="mx-3 mt-4">
-                        <h5>検索結果</h5>
+                <!-- ▼ 検索結果 -->
+				<c:choose>
+				    <c:when test="${not empty students}">
+				        <div class="mx-3 mt-4">
+				            <h5>検索結果</h5>
+				            <table class="table table-bordered mt-3">
+				                <thead class="table-light">
+				                    <tr>
+				                        <th>学生番号</th>
+				                        <th>氏名</th>
+				                        <th>科目</th>
+				                        <th>回</th>
+				                        <th>点数</th>
+				                    </tr>
+				                </thead>
+				                <tbody>
+				                    <c:forEach var="t" items="${tests}">
+				                        <tr>
+				                            <td>${t.student.no}</td>
+				                            <td>${t.student.name}</td>
+				                            <td>${t.subject.name}</td>
+				                            <td>${t.no}</td>
+				                            <td>${t.point}</td>
+				                        </tr>
+				                    </c:forEach>
+				                </tbody>
+				            </table>
+				        </div>
+				    </c:when>
+				
+				    <c:otherwise>
+				        <c:if test="${not empty f1 and not empty f2 and not empty f3 and not empty f4}">
+				            <div class="fw-bold ms-3 mt-3" style="color: black;">
+				                学生情報が存在しませんでした。
+				            </div>
+				        </c:if>
+				    </c:otherwise>
+				</c:choose>
 
-                        <table class="table table-bordered mt-3">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>学生番号</th>
-                                    <th>氏名</th>
-                                    <th>科目</th>
-                                    <th>回</th>
-                                    <th>点数</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="t" items="${tests}">
-                                    <tr>
-                                        <td>${t.student.no}</td>
-                                        <td>${t.student.name}</td>
-                                        <td>${t.subject.name}</td>
-                                        <td>${t.no}</td>
-                                        <td>${t.point}</td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                    </div>
-                </c:if>
+
 
             </section>
         </div>

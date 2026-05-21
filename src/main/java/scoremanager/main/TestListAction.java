@@ -45,9 +45,7 @@ public class TestListAction extends Action {
         LocalDate today = LocalDate.now();
         int year = today.getYear();
         List<Integer> entYearSet = new ArrayList<>();
-        for (int i = year - 10; i <= year; i++) {
-            entYearSet.add(i);
-        }
+        for (int i = year - 10; i <= year; i++) entYearSet.add(i);
 
         // ▼ 科目一覧
         List<Subject> subjectList = new ArrayList<>();
@@ -58,65 +56,41 @@ public class TestListAction extends Action {
         ps.setString(1, school.getCd());
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            String cd = rs.getString("cd");
-            Subject s = subDao.get(cd, school);
-            subjectList.add(s);
+            subjectList.add(subDao.get(rs.getString("cd"), school));
         }
-        rs.close();
-        ps.close();
-        con.close();
+        rs.close(); ps.close(); con.close();
 
-        // ▼ 初期表示
+        // ▼ 初期表示（検索前）
         if (f1 == null && f2 == null && f3 == null && f4 == null) {
-            req.setAttribute("ent_year_set", entYearSet);
-            req.setAttribute("class_num_list", cDao.filter(school));
-            req.setAttribute("subject_list", subjectList);
+            setCommon(req, entYearSet, cDao, school, subjectList);
             req.getRequestDispatcher("test_list.jsp").forward(req, res);
             return;
         }
 
-        // ▼ 学生別成績照会（学生番号検索）
-        if (f4 != null) {
+        List<Student> students = new ArrayList<>();
+        List<Test> tests = new ArrayList<>();
 
-            if (f4.isEmpty()) {
-                req.setAttribute("error", "学生番号を入力してください。");
-            } else {
-                Student student = sDao.get(f4);
-
-                if (student == null) {
-                    req.setAttribute("error", "学生番号が存在しません。");
-                } else {
-                    List<Test> tests = new ArrayList<>();
-                    for (Subject subject : subjectList) {
-                        Test t1 = tDao.get(student, subject, school, 1);
-                        Test t2 = tDao.get(student, subject, school, 2);
-                        if (t1 != null) tests.add(t1);
-                        if (t2 != null) tests.add(t2);
-                    }
-                    req.setAttribute("students", List.of(student));
-                    req.setAttribute("tests", tests);
+        // ▼ 学生番号検索
+        if (f4 != null && !f4.isEmpty()) {
+            Student student = sDao.get(f4);
+            if (student != null) {
+                for (Subject subject : subjectList) {
+                    Test t1 = tDao.get(student, subject, school, 1);
+                    Test t2 = tDao.get(student, subject, school, 2);
+                    if (t1 != null) tests.add(t1);
+                    if (t2 != null) tests.add(t2);
                 }
+                students.add(student);
             }
-
-            req.setAttribute("ent_year_set", entYearSet);
-            req.setAttribute("class_num_list", cDao.filter(school));
-            req.setAttribute("subject_list", subjectList);
-            req.setAttribute("f4", f4);
-
-            req.getRequestDispatcher("test_list.jsp").forward(req, res);
-            return;
         }
-
-        // ▼ 科目別成績照会（科目検索）
-        if (!"0".equals(f1) && !"0".equals(f2) && !"0".equals(f3)) {
-
+        // ▼ 科目検索
+        else if (!"0".equals(f1) && !"0".equals(f2) && !"0".equals(f3)) {
             int entYear = Integer.parseInt(f1);
             String classNum = f2;
             String subjectCd = f3;
 
             Subject subject = subDao.get(subjectCd, school);
-            List<Student> students = sDao.filter(school, entYear, classNum, true);
-            List<Test> tests = new ArrayList<>();
+            students = sDao.filter(school, entYear, classNum, true);
 
             for (Student s : students) {
                 Test t1 = tDao.get(s, subject, school, 1);
@@ -124,30 +98,39 @@ public class TestListAction extends Action {
                 if (t1 != null) tests.add(t1);
                 if (t2 != null) tests.add(t2);
             }
-
-            req.setAttribute("students", students);
-            req.setAttribute("tests", tests);
-            req.setAttribute("subject_list", List.of(subject));
-
-            req.setAttribute("ent_year_set", entYearSet);
-            req.setAttribute("class_num_list", cDao.filter(school));
-            req.setAttribute("subject_list", subjectList);
-
-            req.setAttribute("f1", f1);
-            req.setAttribute("f2", f2);
-            req.setAttribute("f3", f3);
-
-            req.getRequestDispatcher("test_list.jsp").forward(req, res);
-            return;
         }
 
-        // ▼ 入力不足（科目検索の未選択）
-        req.setAttribute("error", "入学年度・クラス・科目を選択してください。");
+        // ▼ ★ 検索後のみメッセージを出す（初期表示では出さない）
+        boolean searched =
+            (f4 != null && !f4.isEmpty()) ||
+            (!"0".equals(f1) && !"0".equals(f2) && !"0".equals(f3));
+
+        if (searched && students.isEmpty()) {
+            req.setAttribute("error", "学生情報が存在しませんでした。");
+        }
+
+        // ▼ JSPへ渡す
+        req.setAttribute("students", students);
+        req.setAttribute("tests", tests);
+        req.setAttribute("ent_year_set", entYearSet);
+        req.setAttribute("class_num_list", cDao.filter(school));
+        req.setAttribute("subject_list", subjectList);
+        req.setAttribute("f1", f1);
+        req.setAttribute("f2", f2);
+        req.setAttribute("f3", f3);
+        req.setAttribute("f4", f4);
+
+        req.getRequestDispatcher("test_list.jsp").forward(req, res);
+    }
+
+    private void setCommon(HttpServletRequest req,
+                           List<Integer> entYearSet,
+                           ClassNumDao cDao,
+                           School school,
+                           List<Subject> subjectList) {
 
         req.setAttribute("ent_year_set", entYearSet);
         req.setAttribute("class_num_list", cDao.filter(school));
         req.setAttribute("subject_list", subjectList);
-
-        req.getRequestDispatcher("test_list.jsp").forward(req, res);
     }
 }
