@@ -76,7 +76,7 @@
                             <div class="col">
                                 <label class="form-label">学生番号</label>
                                 <input type="text" name="f4" class="form-control"
-                                       value="${f4}" placeholder="学生番号を入力してください" />
+                                       value="${f4}" placeholder="学生番号を入力してください"  required />
                             </div>
 
                             <!-- 学生検索ボタン -->
@@ -88,10 +88,7 @@
                     </div>
                 </form>
                 
-                <!-- ★ 学生番号検索のエラー -->
-                <c:if test="${not empty error and not empty f4}">
-                    <p class="text-warning fw-bold ms-3">${error}</p>
-                </c:if>
+            
 
                 <!-- ▼ 検索結果表示 -->
                 <c:if test="${not empty students}">
