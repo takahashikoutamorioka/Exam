@@ -97,6 +97,7 @@
 				        </div>
 				    </c:when>
 				
+				
 				    <c:otherwise>
 				        <c:if test="${not empty f1 and not empty f2 and not empty f3 and not empty f4}">
 				            <div class="fw-bold ms-3 mt-3" style="color: black;">
