@@ -12,7 +12,7 @@
                 </h2>
 
                 <!-- 科目検索フォーム -->
-                <form action="TestList.action" method="get">
+                <form action="TestListSubjectExecute.action" method="get">
                     <div class="border mx-3 mb-2 py-3 rounded">
                         <div class="row align-items-end">
                             <div class="col">
@@ -59,7 +59,7 @@
 		        </c:if>
 
                 <!-- 学生番号検索フォーム -->
-                <form action="TestList.action" method="get">
+                <form action="TestListStudentExecute.action" method="get">
                     <div class="border mx-3 mb-2 py-3 rounded">
                         <div class="row align-items-end">
                             <div class="col">

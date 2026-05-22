@@ -47,11 +47,11 @@
 					<div class="row">
 						<input class="col btn btn-primary" type="submit" id="filter-button" value="変更" style="max-width:60px">
 
-					<div class="col d-flex justify-content-end">
+					<!--  <div class="col d-flex justify-content-end">
 						<a href="StudentDelete.action?no=${student.getNo()}" class="btn btn-danger" role="button" style="max-width:60px">
 							削除
 						</a>
-					</div>
+					</div>-->
 					</div>
 				</div>
 				<div><a href="StudentList.action">戻る</a></div>
