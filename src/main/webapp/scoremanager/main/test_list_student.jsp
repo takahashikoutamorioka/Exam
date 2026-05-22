@@ -87,29 +87,30 @@
                 </c:when>
 
                 <c:when test="${not empty f4}">
-                    <h5 class="px-4 mb-3">氏名：${students[0].name}（${students[0].no}）</h5>
-
-                    <table class="table table-hover mt-3">
-                        <thead class="table-light">
-                            <tr>
-                                <th>科目名</th>
-                                <th>科目コード</th>
-                                <th>回数</th>
-                                <th>点数</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="test" items="${tests}">
-                                <tr>
-                                    <td>${test.subject.name}</td>
-                                    <td>${test.subject.cd}</td>
-                                    <td>${test.no}</td>
-                                    <td>${test.point}</td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </c:when>
+				    <h5 class="px-4 mb-3">氏名：${students[0].name}（${students[0].no}）</h5>
+				
+				    <table class="table table-hover mt-3">
+				        <thead class="table-light">
+				            <tr>
+				                <th>科目名</th>
+				                <th>科目コード</th>
+				                <th>回数</th>
+				                <th>点数</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <c:forEach var="test" items="${tests}">
+				                <tr>
+				                    <td>${test.subject.name}</td>
+				                    <td>${test.subject.cd}</td>
+				                    <td>${test.no}</td>
+				                    <td>${test.point}</td>
+				                </tr>
+				            </c:forEach>
+				        </tbody>
+				    </table>
+				</c:when>
+                
 
                 <c:otherwise>
                     <h5 class="px-4 mb-3">
