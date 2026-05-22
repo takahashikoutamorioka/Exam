@@ -50,6 +50,13 @@
                         </div>
                     </div>
                 </form>
+                <c:if test="${f4 == null or f4 == ''}">
+				            <c:if test="${f1 == '0' or f2 == '0' or f3 == '0'}">
+				                <div class="fw-bold ms-3 mt-3" style="color:red;">
+				                    入学年度・クラス・科目を入力してください
+				                </div>
+				            </c:if>
+		        </c:if>
 
                 <!-- 学生番号検索フォーム -->
                 <form action="TestList.action" method="get">
@@ -58,7 +65,7 @@
                             <div class="col">
                                 <label class="form-label">学生番号</label>
                                 <input type="text" name="f4" class="form-control"
-                                       value="${f4}" placeholder="学生番号を入力してください" />
+                                       value="${f4}" placeholder="学生番号を入力してください" required/>
                             </div>
                             <div class="col d-flex align-items-end">
                                 <button type="submit" class="btn btn-secondary px-4">検索</button>
@@ -68,7 +75,8 @@
                 </form>
 
                 <!-- ▼ 検索結果 -->
-				<c:choose>
+                <c:choose>
+
 				    <c:when test="${not empty students}">
 				        <div class="mx-3 mt-4">
 				            <h5>検索結果</h5>
@@ -97,17 +105,17 @@
 				        </div>
 				    </c:when>
 				
-				
-				
 				    <c:otherwise>
-				        <c:if test="${not empty f1 and not empty f2 and not empty f3 and not empty f4}">
-				            <div class="fw-bold ms-3 mt-3" style="color: black;">
+				
+				        <c:if test="${not empty f4 and empty students}">
+				            <div class="fw-bold ms-3 mt-3" style="color:black;">
 				                学生情報が存在しませんでした。
 				            </div>
 				        </c:if>
+				
 				    </c:otherwise>
+				
 				</c:choose>
-
 
 
             </section>
